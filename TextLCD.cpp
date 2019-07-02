@@ -3441,7 +3441,7 @@ void TextLCD_I2C::_setData(int value) {
 // Write data to MCP23008 I2C portexpander
 // Used for mbed I2C bus expander
 void TextLCD_I2C::_writeRegister (int reg, int value) {
-  char data[] = {reg, value};
+  char data[] = {(char)reg, (char)value};
     
   _i2c->write(_slaveAddress, data, 2); 
 }
@@ -3735,7 +3735,7 @@ void TextLCD_I2C_N::_writeByte(int value) {
 //   RW=0 means write to controller. RW=1 means that controller will be read from after the next command. 
 //        Many native I2C controllers dont support this option and it is not used by this lib. 
 //
-  char data[] = {_controlbyte, value};
+  char data[] = {_controlbyte, (char)value};
     
 #if(LCD_I2C_ACK==1)
 //Controllers that support ACK
