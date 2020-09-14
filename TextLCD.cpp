@@ -77,7 +77,7 @@ TextLCD_Base::TextLCD_Base(LCDType type, LCDCtrl ctrl) : _type(type), _ctrl(ctrl
   */
 void TextLCD_Base::_init(_LCDDatalength dl) {
 
-  wait_ms(100);                  // Wait 100ms to ensure powered up
+  ThisThread::sleep_for(100ms);                  // Wait 100ms to ensure powered up
   
 #if (LCD_TWO_CTRL == 1)
   // Select and configure second LCD controller when needed
@@ -123,15 +123,15 @@ void TextLCD_Base::_initCtrl(_LCDDatalength dl) {
                            //-------------------------------------------------------------------------------------------------                          
       _writeNibble(0x3);   //  set 8 bit mode (MSN) and dummy LSN, |   set 8 bit mode (MSN),             |    set dummy LSN, 
                            //  remains in 8 bit mode               |    remains in 4 bit mode            |  remains in 4 bit mode
-      wait_ms(15);         //                           
+      ThisThread::sleep_for(15ms);         //                           
      
       _writeNibble(0x3);   //  set 8 bit mode (MSN) and dummy LSN, |      set dummy LSN,                 |    set 8bit mode (MSN), 
                            //  remains in 8 bit mode               |   change to 8 bit mode              |  remains in 4 bit mode
-      wait_ms(15);         // 
+      ThisThread::sleep_for(15ms);         // 
     
       _writeNibble(0x3);   //  set 8 bit mode (MSN) and dummy LSN, | set 8 bit mode (MSN) and dummy LSN, |    set dummy LSN, 
                            //  remains in 8 bit mode               |   remains in 8 bit mode             |  change to 8 bit mode
-      wait_ms(15);         // 
+      ThisThread::sleep_for(15ms);         // 
 
       // Controller is now in 8 bit mode
 
@@ -145,7 +145,7 @@ void TextLCD_Base::_initCtrl(_LCDDatalength dl) {
     else {
       // Reset in 8 bit mode, final Function set will follow 
       _writeCommand(0x30); // Function set 0 0 1 DL=1 N F x x       
-      wait_ms(1);          // most instructions take 40us      
+      ThisThread::sleep_for(1ms);          // most instructions take 40us      
     }      
    
     // Device specific initialisations: DC/DC converter to generate VLCD or VLED, number of lines etc
@@ -442,10 +442,10 @@ void TextLCD_Base::_initCtrl(_LCDDatalength dl) {
                                                             // Saved to allow contrast change at later time
           }
           _writeCommand(0x50 | _icon_power | ((_contrast >> 4) & 0x03));  // Set Icon, Booster and Contrast High bits, 0 1 0 1 Ion Bon C5 C4 (IS=1)
-          wait_ms(10);            // Wait 10ms to ensure powered up
+          ThisThread::sleep_for(10ms);            // Wait 10ms to ensure powered up
           
           _writeCommand(0x68 | (LCD_ST7032_RAB & 0x07));      // Voltage follower, 0 1 1 0 FOn=1, Ampl ratio Rab2=1, Rab1=0, Rab0=0  (IS=1)
-          wait_ms(10);            // Wait 10ms to ensure powered up
+          ThisThread::sleep_for(10ms);            // Wait 10ms to ensure powered up
           
           _writeCommand(0x20 | _function);                  // Select Instruction Set = 0
 
@@ -518,10 +518,10 @@ void TextLCD_Base::_initCtrl(_LCDDatalength dl) {
           }
           
           _writeCommand(0x50 | _icon_power | ((_contrast >> 4) & 0x03));   // Set Contrast C5, C4 (Instr Set 1)
-          wait_ms(10);            // Wait 10ms to ensure powered up
+          ThisThread::sleep_for(10ms);            // Wait 10ms to ensure powered up
 
           _writeCommand(0x68 | (LCD_ST7036_RAB & 0x07));  // Voltagefollower On = 1, Ampl ratio Rab2, Rab1, Rab0 = 1 0 1 (Instr Set 1)
-          wait_ms(10);            // Wait 10ms to ensure powered up
+          ThisThread::sleep_for(10ms);            // Wait 10ms to ensure powered up
 
           _writeCommand(0x20 | _function);          // Set function, IS2,IS1 = 00 (Select Instruction Set = 0)
          
@@ -691,7 +691,7 @@ void TextLCD_Base::_initCtrl(_LCDDatalength dl) {
           
           _writeCommand(0x06);                      // Set ext entry mode, 0 0 0 0 0 1 BDC=1 COM1-32, BDS=0 SEG100-1    "Bottom View" (Ext Instr Set)
 //          _writeCommand(0x05);                      // Set ext entry mode, 0 0 0 0 0 1 BDC=0 COM32-1, BDS=1 SEG1-100    "Top View" (Ext Instr Set)          
-          wait_ms(5);                               // Wait to ensure completion or SSD1803 fails to set Top/Bottom after reset..
+          ThisThread::sleep_for(5ms);                               // Wait to ensure completion or SSD1803 fails to set Top/Bottom after reset..
          
           _writeCommand(0x08 | _lines);             // Set ext function 0 0 0 0 1 FW BW NW 1,2,3 or 4 lines (Ext Instr Set)
 
@@ -710,10 +710,10 @@ void TextLCD_Base::_initCtrl(_LCDDatalength dl) {
           _icon_power = 0x0C;                       // Icon on, Booster on (Instr Set 1)          
                                                     // Saved to allow contrast change at later time
           _writeCommand(0x50 | _icon_power | ((_contrast >> 4) & 0x03));   // Set Power, Icon and Contrast, 0 1 0 1 Ion Bon C5 C4 (Instr Set 1)
-          wait_ms(10);            // Wait 10ms to ensure powered up
+          ThisThread::sleep_for(10ms);            // Wait 10ms to ensure powered up
 
           _writeCommand(0x68 | (LCD_SSD1_RAB & 0x07));  // Set Voltagefollower 0 1 1 0 Don = 1, Ampl ratio Rab2, Rab1, Rab0 = 1 1 0  (Instr Set 1)
-          wait_ms(10);            // Wait 10ms to ensure powered up
+          ThisThread::sleep_for(10ms);            // Wait 10ms to ensure powered up
 
           _writeCommand(0x20 | _function_1);        // Set function, 0 0 1 DL N BE RE(1) REV 
                                                     // Select Extended Instruction Set 1
@@ -761,7 +761,7 @@ void TextLCD_Base::_initCtrl(_LCDDatalength dl) {
           } // switch type    
 
           _writeCommand(0x20 | _function | 0x01);          // Set function, Select Instr Set = 1              
-          wait_ms(10);            // Wait 10ms to ensure powered up                                                    
+          ThisThread::sleep_for(10ms);            // Wait 10ms to ensure powered up                                                    
 
 // Note: Display from GA628 shows 12 chars. This is actually the right half of a 24x1 display. The commons have been connected in reverse order.
           _writeCommand(0x05);                             // Display Conf Set         0000 0, 1, P=0, Q=1               (Instr. Set 1)
@@ -817,7 +817,7 @@ void TextLCD_Base::_initCtrl(_LCDDatalength dl) {
           _contrast = LCD_PCF2_CONTRAST;              
           _writeCommand(0x80 | 0x00 | (_contrast & 0x3F));      // VLCD_set (Instr. Set 1)  1, V=0, VA=contrast
           _writeCommand(0x80 | 0x40 | (_contrast & 0x3F));      // VLCD_set (Instr. Set 1)  1, V=1, VB=contrast
-          wait_ms(10);            // Wait 10ms to ensure powered up
+          ThisThread::sleep_for(10ms);            // Wait 10ms to ensure powered up
           
           _writeCommand(0x02);                             // Screen Config            0000 001, L=0  (Instr. Set 1)
           _writeCommand(0x08);                             // ICON Conf                0000 1, IM=0 (Char mode), IB=0 (no icon blink) DM=0 (no direct mode) (Instr. Set 1) 
@@ -841,7 +841,7 @@ void TextLCD_Base::_initCtrl(_LCDDatalength dl) {
             case LCD24x1:                    
               _writeCommand(0x22);    //FUNCTION SET 0 0 1 DL=0 4-bit, N=0/M=0 1-line/24 chars display mode, G=1 Vgen on, 0 
                                       //Note: 4 bit mode is ignored for I2C mode
-              wait_ms(10);            // Wait 10ms to ensure powered up                                                    
+              ThisThread::sleep_for(10ms);            // Wait 10ms to ensure powered up                                                    
               break;  
 
             case LCD12x3D:            // Special mode for KS0078 and PCF21XX                            
@@ -849,13 +849,13 @@ void TextLCD_Base::_initCtrl(_LCDDatalength dl) {
             case LCD12x4D:            // Special mode for PCF21XX:
               _writeCommand(0x2E);    //FUNCTION SET 0 0 1 DL=0 4-bit, N=1/M=1 4-line/12 chars display mode, G=1 VGen on, 0                               
                                       //Note: 4 bit mode is ignored for I2C mode              
-              wait_ms(10);            // Wait 10ms to ensure powered up                                                    
+              ThisThread::sleep_for(10ms);            // Wait 10ms to ensure powered up                                                    
               break;  
 
             case LCD24x2:
               _writeCommand(0x2A);    //FUNCTION SET 0 0 1 DL=0 4-bit, N=1/M=0 2-line/24 chars display mode, G=1 VGen on, 0
                                       //Note: 4 bit mode is ignored for I2C mode
-              wait_ms(10);            // Wait 10ms to ensure powered up   
+              ThisThread::sleep_for(10ms);            // Wait 10ms to ensure powered up   
               break;  
               
             default:
@@ -878,7 +878,7 @@ void TextLCD_Base::_initCtrl(_LCDDatalength dl) {
 //            case LCD24x1:                    
 //              _writeCommand(0x20);    //FUNCTION SET 0 0 1 DL=0 4-bit, N=0/M=0 1-line/24 chars display mode, G=0 no Vgen, 0 
                                       //Note: 4 bit mode is ignored for I2C mode
-//              wait_ms(10);            // Wait 10ms to ensure powered up                                                    
+//              ThisThread::sleep_for(10ms);            // Wait 10ms to ensure powered up                                                    
 //              break;  
 
             case LCD12x3D:            // Special mode for KS0078 and PCF21XX                            
@@ -888,13 +888,13 @@ void TextLCD_Base::_initCtrl(_LCDDatalength dl) {
 //              _writeCommand(0x24);    //FUNCTION SET 4 bit, N=0/M=1 4-line/12 chars display mode      OK                                            
               _writeCommand(0x2C);    //FUNCTION SET 0 0 1 DL=0 4-bit, N=1/M=1 4-line/12 chars display mode, G=0 no Vgen, 0  OK       
                                       //Note: 4 bit mode is ignored for I2C mode              
-              wait_ms(10);            // Wait 10ms to ensure powered up                                                    
+              ThisThread::sleep_for(10ms);            // Wait 10ms to ensure powered up                                                    
               break;  
 
 //            case LCD24x2:
 //              _writeCommand(0x28);    //FUNCTION SET 4 bit, N=1/M=0 2-line/24 chars display mode
                                       //Note: 4 bit mode is ignored for I2C mode
-//              wait_ms(10);            // Wait 10ms to ensure powered up   
+//              ThisThread::sleep_for(10ms);            // Wait 10ms to ensure powered up   
 //              break;  
               
             default:
@@ -912,7 +912,7 @@ void TextLCD_Base::_initCtrl(_LCDDatalength dl) {
           // Note2: Vgen is switched off when the contrast voltage VA or VB is set to 0x00.
                   
 //POR or Hardware Reset should be applied
-          wait_ms(10);            // Wait 10ms to ensure powered up   
+          ThisThread::sleep_for(10ms);            // Wait 10ms to ensure powered up   
 
           // Initialise Display configuration
           switch (_type) {
@@ -957,7 +957,7 @@ void TextLCD_Base::_initCtrl(_LCDDatalength dl) {
           _contrast = LCD_PCF2_CONTRAST;              
           _writeCommand(0x80 | 0x00 | (_contrast & 0x3F));      // VLCD_set (Instr. Set 1)    V=0, VA=contrast
           _writeCommand(0x80 | 0x40 | (_contrast & 0x3F));      // VLCD_set (Instr. Set 1)    V=1, VB=contrast
-          wait_ms(10);            // Wait 10ms to ensure powered up
+          ThisThread::sleep_for(10ms);            // Wait 10ms to ensure powered up
           
           _writeCommand(0x02);    // SCRN CONF (Instr. Set 1)    L=0
           _writeCommand(0x08);    // ICON CONF (Instr. Set 1)    IM=0 (Char mode) IB=0 (no icon blink) DM=0 (no direct mode)
@@ -985,9 +985,9 @@ void TextLCD_Base::_initCtrl(_LCDDatalength dl) {
    
 //@Todo: This may be needed to enable a warm reboot
           //_writeCommand(0x13);   // Char mode, DC/DC off              
-          //wait_ms(10);           // Wait 10ms to ensure powered down                  
+          //ThisThread::sleep_for(10ms);           // Wait 10ms to ensure powered down                  
           _writeCommand(0x17);   // Char mode, DC/DC on        
-          wait_ms(10);           // Wait 10ms to ensure powered up        
+          ThisThread::sleep_for(10ms);           // Wait 10ms to ensure powered up        
 
           // Initialise Display configuration
           switch (_type) {                    
@@ -1175,7 +1175,7 @@ void TextLCD_Base::_initCtrl(_LCDDatalength dl) {
           _writeCommand(0xDB);                      // Set VCOMH Deselect Lvl: 1 1 0 1 1 0 1 1 (Ext Instr Set, OLED)
           _writeCommand(0x30);                      // Set VCOMH Deselect Value: 0.83 x VCC
 
-          wait_ms(10);            // Wait 10ms to ensure powered up
+          ThisThread::sleep_for(10ms);            // Wait 10ms to ensure powered up
 
 //Test Fade/Blinking. Hard Blink on/off, No fade in/out ??
 //          _writeCommand(0x23);                      // Set (Ext Instr Set, OLED)
@@ -1394,11 +1394,11 @@ void TextLCD_Base::_initCtrl(_LCDDatalength dl) {
                                                             // Saved to allow contrast change at later time
 
           _writeCommand(0x50 | _icon_power | ((_contrast >> 4) & 0x03));  // Set Icon, Booster and Contrast High bits, 0 1 0 1 Ion Bon C5 C4 (IS=1)
-          wait_ms(10);            // Wait 10ms to ensure powered up
+          ThisThread::sleep_for(10ms);            // Wait 10ms to ensure powered up
           
           _writeCommand(0x68 | (LCD_SPLC792A_RAB & 0x07));  // Voltage follower, 0 1 1 0 FOn=1, Ampl ratio Rab2=1, Rab1=0, Rab0=0  (IS=1)
                                                             // Note: Follower circuit always on for SPLC792A, Bit3 is dont care          
-          wait_ms(10);            // Wait 10ms to ensure powered up
+          ThisThread::sleep_for(10ms);            // Wait 10ms to ensure powered up
           
           _writeCommand(0x20 | _function);                  // Select Instruction Set = 0
 
@@ -1452,11 +1452,11 @@ void TextLCD_Base::_initCtrl(_LCDDatalength dl) {
 
     // Controller general initialisations                                          
 //    _writeCommand(0x01); // Clear Display and set cursor to 0
-//    wait_ms(10);         // The CLS command takes 1.64 ms.
+//    ThisThread::sleep_for(10ms);         // The CLS command takes 1.64 ms.
 //                         // Since we are not using the Busy flag, Lets be safe and take 10 ms  
 
     _writeCommand(0x02); // Cursor Home, DDRAM Address to Origin
-    wait_ms(10);         // The Return Home command takes 1.64 ms.
+    ThisThread::sleep_for(10ms);         // The Return Home command takes 1.64 ms.
                          // Since we are not using the Busy flag, Lets be safe and take 10 ms      
 
     _writeCommand(0x06); // Entry Mode 0000 0 1 I/D S 
@@ -1494,7 +1494,7 @@ void TextLCD_Base::cls() {
 
     // Second LCD controller Clearscreen
     _writeCommand(0x01);  // cls, and set cursor to 0    
-    wait_ms(20);          // The CLS command takes 1.64 ms.
+    ThisThread::sleep_for(20ms);          // The CLS command takes 1.64 ms.
                           // Since we are not using the Busy flag, Lets be safe and take 10 ms
   
     _ctrl_idx=_LCDCtrl_0; // Select primary controller
@@ -1503,7 +1503,7 @@ void TextLCD_Base::cls() {
   
   // Primary LCD controller Clearscreen
   _writeCommand(0x01);    // cls, and set cursor to 0
-  wait_ms(20);            // The CLS command takes 1.64 ms.
+  ThisThread::sleep_for(20ms);            // The CLS command takes 1.64 ms.
                           // Since we are not using the Busy flag, Lets be safe and take 10 ms
 
   // Restore cursormode on primary LCD controller when needed
@@ -1514,7 +1514,7 @@ void TextLCD_Base::cls() {
 #else
   // Support only one LCD controller
   _writeCommand(0x01);    // cls, and set cursor to 0
-  wait_ms(20);            // The CLS command takes 1.64 ms.
+  ThisThread::sleep_for(20ms);            // The CLS command takes 1.64 ms.
                           // Since we are not using the Busy flag, Lets be safe and take 10 ms
 #endif
                    
@@ -2405,7 +2405,7 @@ void TextLCD_Base::setPower(bool powerOn) {
 
       case WS0010:      
         _writeCommand(0x17);   // Char mode, DC/DC on        
-        wait_ms(10);           // Wait 10ms to ensure powered up             
+        ThisThread::sleep_for(10ms);           // Wait 10ms to ensure powered up             
         break;
 
       case KS0073:        
@@ -2503,7 +2503,7 @@ void TextLCD_Base::setOrient(LCDOrient orient){
           _writeCommand(0x40 | 0x00);               // COM/SEG directions 0 1 0 0 C1, C2, S1, S2  (Instr Set 1)
                                                     // C1=1: Com1-8 -> Com8-1;   C2=1: Com9-16 -> Com16-9
                                                     // S1=1: Seg1-40 -> Seg40-1; S2=1: Seg41-80 -> Seg80-41                                                    
-          wait_ms(5);                               // Wait to ensure completion or ST7070 fails to set Top/Bottom after reset..
+          ThisThread::sleep_for(5ms);                               // Wait to ensure completion or ST7070 fails to set Top/Bottom after reset..
           
           _writeCommand(0x20 | _function);          // Set function, EXT=0 (Select Instr Set = 0)
         
@@ -2556,7 +2556,7 @@ void TextLCD_Base::setOrient(LCDOrient orient){
           _writeCommand(0x40 | 0x0F);               // COM/SEG directions 0 1 0 0 C1, C2, S1, S2  (Instr Set 1)
                                                     // C1=1: Com1-8 -> Com8-1;   C2=1: Com9-16 -> Com16-9
                                                     // S1=1: Seg1-40 -> Seg40-1; S2=1: Seg41-80 -> Seg80-41                                                    
-          wait_ms(5);                               // Wait to ensure completion or ST7070 fails to set Top/Bottom after reset..
+          ThisThread::sleep_for(5ms);                               // Wait to ensure completion or ST7070 fails to set Top/Bottom after reset..
           
           _writeCommand(0x20 | _function);          // Set function, EXT=0 (Select Instr Set = 0)
         
@@ -3525,7 +3525,7 @@ TextLCD_SPI::TextLCD_SPI(SPI *spi, PinName cs, LCDType type, LCDCtrl ctrl) :
   _spi->frequency(500000);    
   //_spi.frequency(1000000);    
 
-  wait_ms(100);                   // Wait 100ms to ensure LCD powered up
+  ThisThread::sleep_for(100ms);                   // Wait 100ms to ensure LCD powered up
   
   // Init the portexpander bus
   _lcd_bus = LCD_BUS_SPI_DEF;

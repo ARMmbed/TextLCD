@@ -48,6 +48,7 @@
 #define MBED_TEXTLCD_H
 
 #include "mbed.h"
+#include "Stream.h"
 #include "TextLCD_Config.h"
 #include "TextLCD_UDC.h"
 
